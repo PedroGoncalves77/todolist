@@ -1,12 +1,12 @@
 package com.pwusilva.todolist.user;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import jakarta.annotation.Generated;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,9 +21,9 @@ public class UserModel {
   @GeneratedValue(generator = "UUID")
   private UUID id;
 
-  // @Column(name = "usuario")
-  @Column(unique = true)
+  //@Column(name = "usuario")
   private String name;
+  @Column(unique = true)
   private String username;
   private String password;
 

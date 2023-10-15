@@ -1,15 +1,15 @@
 package com.pwusilva.todolist.task;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import org.hibernate.mapping.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +21,7 @@ import com.pwusilva.todolist.utils.Utils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -60,10 +60,22 @@ public class TaskController
 
   }
   @PutMapping("/{id}")
-  public TaskModel update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id)
+  public ResponseEntity update(@RequestBody TaskModel taskModel, HttpServletRequest request, @PathVariable UUID id)
   {
+    var idUser = request.getAttribute("idUser");
+    
     var task = this.taskRepository.findById(id).orElse(null);
+    if(task == null)
+    {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Task inexistente!");
+    }
+
+    if(!task.getIdUser().equals(idUser))
+    {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuario invalido!");
+    }
     Utils.copyNonNullProperties(taskModel, task);
-     return this.taskRepository.save(taskModel);
+     var taskUpdated = this.taskRepository.save(task);
+     return ResponseEntity.status(HttpStatus.OK).body(taskUpdated);
   }
 }
